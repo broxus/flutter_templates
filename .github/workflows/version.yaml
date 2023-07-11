@@ -1,0 +1,80 @@
+name: Create version PR
+
+on:
+  workflow_call:
+    inputs:
+      version_parameters:
+        description: 'Parameters to pass to "melos version"'
+        default: ' '
+        type: string
+      user_name:
+        description: 'Git user name'
+        default: 'Odrin'
+        type: string
+      user_email:
+        description: 'Git user email'
+        default: 'odrin666@gmail.com'
+        type: string
+      push_tags:
+        description: 'Push created versit tags'
+        default: false
+        type: boolean
+    secrets:
+      token:
+        required: true
+
+jobs:
+  version_bump:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.token }}
+
+    steps:
+      # Setup
+      - uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.token }}
+          fetch-depth: 0
+      - name: Setup git
+        run: |
+          git config user.name "${{ inputs.user_name }}"
+          git config user.email "${{ inputs.user_email }}"
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.4'
+          channel: 'stable'
+          cache: true
+          cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
+      - uses: bluefireteam/melos-action@v2
+
+      - name: Bump version using melos
+        run: melos version --all --yes ${{ inputs.version_parameters }}
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v5.0.2
+        with:
+          token: ${{ secrets.token }}
+          commit-message: "chore: version bump"
+          committer: ${{ inputs.user_name }} <${{ inputs.user_email }}>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: version-bump
+          delete-branch: true
+          title: "chore: version bump"
+          body: |
+            ## Description
+
+            This is an automated PR to bump the version of the package.
+
+            ## Type of Change
+
+            - [x] 🗑️ Chore
+
+          labels: |
+            version_bump
+            automated_pr
+          draft: false
+
+      - name: Push version tags
+        if: inputs.push_tags
+        run: git push --tags
