@@ -1,0 +1,29 @@
+name: Run melos command
+
+on:
+  workflow_call:
+    inputs:
+      command:
+        description: 'Melos command name'
+        default: 'build_and_test'
+        type: string
+      runner:
+        description: 'Job runner'
+        default: 'ubuntu-latest'
+        type: string
+
+jobs:
+  run_command:
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.4'
+          channel: 'stable'
+          cache: true
+          cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
+      - uses: bluefireteam/melos-action@v2
+
+      - name: Run melos command
+        run: melos run ${{ inputs.command }}
