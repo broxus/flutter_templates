@@ -1,0 +1,42 @@
+name: Publish package
+
+on:
+  workflow_call:
+    inputs:
+      publish_gh:
+        description: 'Publish package to github'
+        default: true
+        type: boolean
+      publish_pubdev:
+        description: 'Publish package to pub.dev'
+        default: true
+        type: boolean
+
+jobs:
+  publish_gh:
+    if: inputs.publish_gh
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+
+  publish_pubdev:
+    if: inputs.publish_pubdev
+    permissions:
+      id-token: write # This is required for authentication using OIDC
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dart-lang/setup-dart@v1
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.10.4'
+          channel: 'stable'
+          cache: true
+          cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
+      
+      - name: Publish
+        run: flutter pub publish --force
