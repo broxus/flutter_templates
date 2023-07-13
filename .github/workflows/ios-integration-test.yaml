@@ -4,8 +4,7 @@ on:
   workflow_call:
     inputs:
       working-directory:
-          description: ''
-          required: true
+          default: ./
           type: string
 
 jobs:
