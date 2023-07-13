@@ -11,6 +11,10 @@ on:
         description: 'Job runner'
         default: 'ubuntu-latest'
         type: string
+      env_vars:
+        description: List of environment variables to set up, given in env=value format.
+        required: false
+        type: string
 
 jobs:
   run_command:
@@ -24,6 +28,14 @@ jobs:
           cache: true
           cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
       - uses: bluefireteam/melos-action@v2
+
+      - name: Set environment variables
+        if: ${{ inputs.env_vars }}
+        run: |
+          for i in "${{ inputs.env_vars }}"
+          do
+            printf "%s\n" $i >> $GITHUB_ENV
+          done
 
       - name: Run melos command
         run: melos run ${{ inputs.command }}
