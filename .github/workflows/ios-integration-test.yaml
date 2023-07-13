@@ -4,8 +4,13 @@ on:
   workflow_call:
     inputs:
       working-directory:
-          default: ./
-          type: string
+        default: ./
+        type: string
+      codegen:
+        description: 'Run melos codegen before tests'
+        default: false
+        type: boolean
+
 
 jobs:
   ios_integration_test:
@@ -27,6 +32,10 @@ jobs:
           DEVICE_ID=$(xcrun xctrace list devices | grep iPhone | head -1 | awk '{print $NF}' | tr -d '()')
           echo "DEVICE_ID=$DEVICE_ID" >> $GITHUB_ENV
           xcrun simctl boot $DEVICE_ID
+
+      - name: Generate dart code
+        if: inputs.codegen
+        run: melos codegen --no-select
 
       - name: Run Flutter integration tests
         working-directory: ${{ inputs.working-directory }}
