@@ -18,6 +18,9 @@ on:
 
 jobs:
   run_command:
+    env:
+      SECRET_PASSPHRASE: ${{ secrets.SECRET_PASSPHRASE }}
+
     runs-on: ${{ inputs.runner }}
     steps:
       - uses: actions/checkout@v3
