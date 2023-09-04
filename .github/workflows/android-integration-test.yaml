@@ -17,7 +17,7 @@ jobs:
     timeout-minutes: 360
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
           flutter-version: '3.13.0'
