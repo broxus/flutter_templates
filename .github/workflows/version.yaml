@@ -45,7 +45,7 @@ jobs:
           channel: 'stable'
           cache: true
           cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
-      - uses: bluefireteam/melos-action@v2
+      - uses: bluefireteam/melos-action@v3
 
       - name: Bump version using melos
         run: melos version --all --yes ${{ inputs.version_parameters }}
