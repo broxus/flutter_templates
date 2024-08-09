@@ -32,7 +32,7 @@ jobs:
           java-version: "17.x"
 
       - name: Gradle cache
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v3
 
       - name: AVD cache
         uses: actions/cache@v3
