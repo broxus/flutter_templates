@@ -25,7 +25,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
 
   publish_pubdev:
     if: inputs.publish_pubdev
@@ -37,7 +37,7 @@ jobs:
       - uses: dart-lang/setup-dart@v1
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.6'
+          flutter-version: '3.24.0'
           channel: 'stable'
           cache: true
           cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
