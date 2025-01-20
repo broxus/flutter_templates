@@ -19,6 +19,10 @@ on:
         description: 'Push created versit tags'
         default: false
         type: boolean
+      flutter_version:
+        description: 'Flutter version'
+        default: '3.27.0'
+        type: string
     secrets:
       token:
         required: true
@@ -41,7 +45,7 @@ jobs:
           git config user.email "${{ inputs.user_email }}"
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: ${{ inputs.flutter_version }}
           channel: 'stable'
           cache: true
           cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
