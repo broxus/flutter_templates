@@ -15,6 +15,10 @@ on:
         description: List of environment variables to set up, given in env=value format.
         required: false
         type: string
+      flutter_version:
+        description: 'Flutter version'
+        default: '3.27.0'
+        type: string
 
 jobs:
   run_command:
@@ -26,7 +30,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: ${{ inputs.flutter_version }}
           channel: 'stable'
           cache: true
           cache-key: flutter-:os:-:channel:-:version:-:arch:-:hash:-${{ hashFiles('**/pubspec.lock') }}
